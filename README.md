@@ -1,2 +1,2 @@
 # cse302labs
-CSE302 Lbas
+CSE302 Labs
