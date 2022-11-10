@@ -1,0 +1,143 @@
+{
+  "tag": "Program",
+  "body": {
+    "tag": "Block",
+    "stmts": [
+      {
+        "tag": "Vardecl",
+        "var": {
+          "tag": "Variable",
+          "ty": "int",
+          "name": "x"
+        },
+        "init": {
+          "tag": "Number",
+          "ty": "int",
+          "value": 42
+        }
+      },
+      {
+        "tag": "Vardecl",
+        "var": {
+          "tag": "Variable",
+          "ty": "int",
+          "name": "y"
+        },
+        "init": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "BITSHR",
+          "args": [
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "x"
+            },
+            {
+              "tag": "Number",
+              "ty": "int",
+              "value": 1
+            }
+          ]
+        }
+      },
+      {
+        "tag": "Print",
+        "arg": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "PLUS",
+          "args": [
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "x"
+            },
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "y"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "Print",
+        "arg": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "MINUS",
+          "args": [
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "x"
+            },
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "y"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "Vardecl",
+        "var": {
+          "tag": "Variable",
+          "ty": "int",
+          "name": "z"
+        },
+        "init": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "PLUS",
+          "args": [
+            {
+              "tag": "OpApp",
+              "ty": "int",
+              "op": "TIMES",
+              "args": [
+                {
+                  "tag": "Variable",
+                  "ty": "int",
+                  "name": "x"
+                },
+                {
+                  "tag": "Number",
+                  "ty": "int",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "y"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "Print",
+        "arg": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "MODULUS",
+          "args": [
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "z"
+            },
+            {
+              "tag": "Variable",
+              "ty": "int",
+              "name": "x"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

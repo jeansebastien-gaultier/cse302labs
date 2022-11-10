@@ -1,0 +1,16 @@
+{
+  "tag": "Program",
+  "body": {
+    "tag": "Block",
+    "stmts": [
+      {
+        "tag": "Print",
+        "arg": {
+          "tag": "Number",
+          "ty": "int",
+          "value": 42
+        }
+      }
+    ]
+  }
+}

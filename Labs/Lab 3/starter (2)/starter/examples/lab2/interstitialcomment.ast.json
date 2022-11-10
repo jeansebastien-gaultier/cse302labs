@@ -1,0 +1,41 @@
+{
+  "tag": "Program",
+  "body": {
+    "tag": "Block",
+    "stmts": [
+      {
+        "tag": "Vardecl",
+        "var": {
+          "tag": "Variable",
+          "ty": "int",
+          "name": "x"
+        },
+        "init": {
+          "tag": "OpApp",
+          "ty": "int",
+          "op": "PLUS",
+          "args": [
+            {
+              "tag": "Number",
+              "ty": "int",
+              "value": 1
+            },
+            {
+              "tag": "Number",
+              "ty": "int",
+              "value": 2
+            }
+          ]
+        }
+      },
+      {
+        "tag": "Print",
+        "arg": {
+          "tag": "Variable",
+          "ty": "int",
+          "name": "x"
+        }
+      }
+    ]
+  }
+}
