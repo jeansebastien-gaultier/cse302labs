@@ -50,12 +50,12 @@ def json_to_expr(js_obj):
         return ExpressionInt(js_obj[1]['value'])
 
     if js_obj[0] == '<expression:uniop>':
-        operator = json_to_name(js_obj[1]['operator'][1]['value'])
-        argument = json_to_expr(js_obj[1]['argument'][0])
+        operator = json_to_name(js_obj[1]['operator'])
+        argument = json_to_expr(js_obj[1]['argument'])
         return ExpressionUniOp(operator, argument)
 
     if js_obj[0] == '<expression:binop>':
-        operator = json_to_name(js_obj[1]['operator'][1]['value'])
+        operator = json_to_name(js_obj[1]['operator'])
         argument_l = json_to_expr(js_obj[1]['left'])
         argument_r = json_to_expr(js_obj[1]['right']) 
         return ExpressionBinOp(argument_l, operator, argument_r)
@@ -86,14 +86,14 @@ class StatementEval(Statement):
 
 def json_to_statement(js_obj):
     if js_obj[0] == "<statement:vardecl>":
-        name = js_obj[1]['name'][1]['value']
-        type = js_obj[1]['type'][0]
-        init = js_obj[1]['init'][1]['value']
+        name = js_obj[1]['name']['value']
+        type = js_obj[1]['type']
+        init = js_obj[1]['init']
         return StatementVarDecl(name, type, init)
     
     if js_obj[0] == "<statement:assign>":
-        l_value = js_obj[1]['l_value']
-        r_value = json_to_expr(js_obj[1]['r_value'])
+        l_value = js_obj[1]['lvalue'][1]['name'][1]['value']
+        r_value = json_to_expr(js_obj[1]['rvalue'])
         return StatementAssign(l_value, r_value)
 
     if js_obj[0] == "<statement:eval>" and js_obj[1]['expression'][0] == "<expression:call>":
@@ -130,9 +130,6 @@ def tmm_expr(expression, tac):
         operator, argument = tmm_expr(expression.argument, tac)
         tac[0]['body'].append({"opcode": op, "args": argument, "result":result})
         return UNOP[expression.op], [result]
-    
-    else:
-        return "EXpression not recognized"
 
 
 
@@ -168,7 +165,7 @@ def tmm_statements(instructions, tac):
             fresh_temporary+=1
             op, argument = tmm_expr(inst.argument[0], tac)
             tac[0]['body'].append({"opcode":operator, "args":argument, "result":result})
-            tac[0]['body'].append({'opcode':inst.target, "args": [result], "result": null})
+            tac[0]['body'].append({'opcode':inst.target, "args": [result], "result": None})
     
         else:
             return "Instruction not recognized"
@@ -184,13 +181,13 @@ def main():
         js_obj = json.load(fp)
 
     ast = js_obj['ast'][0]
-    statements = js_obj['ast'][0][0]
+    statements = js_obj['ast'][0][1]['body']
     tac = [ { "proc": "@main", "body": [] } ]
     inst = [json_to_statement(statement) for statement in statements]
     tmm_statements(inst, tac)
 
     with open(ast_file[:-5] + '.tac.json', 'w') as file:
-        file.write(json.dump(tac, file))
+        json.dump(tac, file)
 
 if __name__ == "__main__":
     main()
