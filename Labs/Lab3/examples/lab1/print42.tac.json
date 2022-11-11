@@ -1,0 +1,1 @@
+[{"proc": "@main", "body": [{"opcode": "const", "args": [42], "result": "%0"}, {"opcode": "print", "args": ["%0"], "result": null}], "temps": ["%0"], "labels": []}]
