@@ -27,7 +27,7 @@ def eval_bool_exp(expression, tac):
     next_temorary += 1
     next_label += 1
 
-    return temp
+    return (f'%{str(next_temorary)}')
 
 
 def bool_exp(expression, Lt, Lf, tac):
@@ -36,7 +36,7 @@ def bool_exp(expression, Lt, Lf, tac):
     global filename
 
     if expression.type != 'bool':
-        errorBX(filename, "UnexpExp", expression)
+        errorBx(filename, "UnexpExp", expression)
 
     if isinstance(expression, ExpressionBool):
         if expression.value == 'true':
@@ -235,7 +235,7 @@ def statements_to_tac(instruction, tac):
 
                 return
         else:
-            errorBx(filename, "UndcVar", expression.target)
+            errorBx(filename, "UndcVar", instruction.target)
 
     elif isinstance(instruction, StatementCall):
         result = '%' + str(next_temorary)
