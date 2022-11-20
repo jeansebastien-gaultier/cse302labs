@@ -1,6 +1,4 @@
-import sys
-import getopt
-import json
+import sys, getopt, json
 
 from json_to_stat import ProcDec, StatementVarDecl
 from tac2x64 import Instr
@@ -344,13 +342,6 @@ def final(filename):
                          None, proc_instrs, None, None))
         elif isinstance(decl, StatementVarDecl):
             variables.append(decl)
-
-    with open(f'{filename[:-4]}tac_optimized.json', 'w') as tac_file:
-        tac = []
-        for i in variables + process:
-            tac.append(i.to_tac())
-        out = json.dumps(tac)
-        tac_file.write(out)
 
 
 
