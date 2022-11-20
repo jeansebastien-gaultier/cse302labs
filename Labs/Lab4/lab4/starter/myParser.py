@@ -6,14 +6,15 @@ import json_to_stat as jts
 
 
 class Parser(object):
-    def __init__(self, filename=""):
+    def __init__(self, code, filename=""):
         self.lex = Lexer(filename=filename)
         self.tokens = self.lex.tokens
         self.parser = yacc.yacc(module=self, start='program')
         self.filename = filename
+        self.code = code
 
-    def parse(self, text):
-        return self.parser.parse(input=text, lexer=self.lex)
+    def parse(self):
+        return self.parser.parse(input=self.code, lexer=self.lex)
 
     precedence = (
         ('left', 'bor'),
@@ -40,16 +41,16 @@ class Parser(object):
 
     def p_expr_ident(self, p):
         """expr : IDENT"""
-        p[0] = jts.ExpressionVar(p[1], p.lineno(1))
+        p[0] = jts.ExpressionVar(p[1], p.lineno(1), self.lex.find_tok_column(p, 1))
 
     def p_expr_number(self, p):
         """expr : NUMBER"""
-        p[0] = jts.ExpressionInt(p[1], p.lineno(1))
+        p[0] = jts.ExpressionInt(p[1], p.lineno(1), self.lex.find_tok_column(p, 1))
 
     def p_expr_bool(self, p):
         """expr : true
                 | false"""
-        p[0] = jts.ExpressionBool(p[1], p.lineno(1))
+        p[0] = jts.ExpressionBool(p[1], p.lineno(1), self.lex.find_tok_column(p, 1))
 
     def p_expr_binop(self, p):
         '''expr : expr add expr
@@ -77,7 +78,7 @@ class Parser(object):
                    '&&': 'band', '==': 'jz', '!=': 'jnz', '<': 'jl',
                    '>': 'jnle', '<=': 'jle', '>=': 'jnl'}
 
-        p[0] = jts.ExpressionBinOp(p[1], to_name[p[2]], p[3], p.lineno(2))
+        p[0] = jts.ExpressionBinOp(p[1], to_name[p[2]], p[3], p.lineno(2), self.lex.find_tok_column(p, 1))
 
     def p_expr_unop(self, p):
         '''expr : not expr
@@ -86,7 +87,7 @@ class Parser(object):
                 | NOT expr'''
 
         to_name = {'-': 'neg', '~': 'not', '!': 'NOT'}
-        p[0] = jts.ExpressionUniOp(to_name[p[1]], p[2], p.lineno(1))
+        p[0] = jts.ExpressionUniOp(to_name[p[1]], p[2], p.lineno(1), self.lex.find_tok_column(p, 1))
 
     def p_expr_parens(self, p):
         '''expr : LPAREN expr RPAREN'''
