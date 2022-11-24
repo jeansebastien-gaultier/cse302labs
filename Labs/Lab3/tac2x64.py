@@ -81,7 +81,7 @@ class Create_x64:
         elif op in self.condition:
             self.strs.append("\tmovq {}(%rbp),%rax".format(-8 * self.get_pos(arg1)))
             self.strs.append("\tcmpq $0, %rax".format())
-            self.strs.append("\t{} {}".format(op, arg2[1:]))
+            self.strs.append("\t{} .main{}".format(op, arg2[1:]))
 
     def main(self, tac_file):
         for line in tac_file:
