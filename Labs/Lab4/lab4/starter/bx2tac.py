@@ -15,17 +15,23 @@ def eval_bool_exp(expression, tac):
     global next_temorary
     global next_label
 
-    L1 = "%.L" + str(next_label)
-    next_label += 1
-    L2 = "%.L" + str(next_label)
+    if isinstance(expression, StatementCall):
+        expression.type = 'int'
+        op, args = tmm_int_expressions(expression, tac)
+        tac['body'].append({'opcode':op, 'args': args, 'result': f'%{str(next_temorary)}'})
+        expression = 'bool'
+    else:
+        L1 = "%.L" + str(next_label)
+        next_label += 1
+        L2 = "%.L" + str(next_label)
 
-    tac[0]['body'].append({'opcode': 'const', 'args': [0], 'result': '%' + str(next_temorary)})
-    bool_exp(expression, L1, L2, tac)
-    tac[0]['body'].append({'opcode': 'label', 'args': [L1], 'result': None})
-    tac[0]['body'].append({'opcode': 'const', 'args': [1], 'result': '%' + str(next_temorary)})
-    tac[0]['body'].append({'opcode': 'label', 'args': [L2], 'result': None})
+        tac[0]['body'].append({'opcode': 'const', 'args': [0], 'result': '%' + str(next_temorary)})
+        bool_exp(expression, L1, L2, tac)
+        tac[0]['body'].append({'opcode': 'label', 'args': [L1], 'result': None})
+        tac[0]['body'].append({'opcode': 'const', 'args': [1], 'result': '%' + str(next_temorary)})
+        tac[0]['body'].append({'opcode': 'label', 'args': [L2], 'result': None})
+        next_label += 1
     next_temorary += 1
-    next_label += 1
 
     return f'%{str(next_temorary)}'
 
@@ -354,3 +360,33 @@ def bx2tac(code, file):
     statements.type_check()
     statements_to_tac(statements, tac)
     return json.dumps(tac)
+
+def bx2tac(code, file=""):
+    global filename
+    filename = file
+    for line in code.split('\n'):
+        lines.append(line)
+
+    instructions = bx2front(code, filename)
+    tac, index = tmm_globs(instructions)
+
+    try:
+        for i, instruction in index:
+            if isinstance(instruction, ProcDec):
+                scopes.append({arg.name: ("%" + arg.name, arg.lineno)
+                              for arg in instruction.args})
+                tmm_statements(instruction.body, tac[i])
+                scopes.pop()
+
+        tac_json = json.dumps(tac)
+    except SyntaxError as err:
+        print('Syntax error:', err)
+        sys.exit(1)
+    except TypeError as err:
+        print('Type error:', err)
+        sys.exit(1)
+    except ValueError as err:
+        print('Value error:', err)
+        sys.exit(1)
+
+    return tac_json
